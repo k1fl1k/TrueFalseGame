@@ -2,6 +2,7 @@
 
 namespace k1fl1k\truefalsegame\Providers;
 
+use k1fl1k\truefalsegame\App\Livewire\Profile\UpdateAvatarForm;
 use k1fl1k\truefalsegame\App\Livewire\Profile\FavoriteGamesForm;
 use k1fl1k\truefalsegame\App\Livewire\Profile\UserGamesForm;
 use Illuminate\Support\ServiceProvider;
@@ -26,5 +27,6 @@ class AppServiceProvider extends ServiceProvider
         Livewire::component('profile.profile-information-form', ProfileInformationForm::class);
         Livewire::component('profile.user-games-form', UserGamesForm::class);
         Livewire::component('profile.favorite-games-form', FavoriteGamesForm::class);
+        livewire::component('profile.update-avatar-form', UpdateAvatarForm::class);
     }
 }
