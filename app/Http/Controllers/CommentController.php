@@ -74,7 +74,7 @@ class CommentController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(Comment $comment, TruthOrLieGame $game)
+    public function destroy(TruthOrLieGame $game, Comment $comment)
     {
         // Перевіряємо, чи коментар належить вказаній роботі
         if ($comment->game_id !== $game->id) {

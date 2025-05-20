@@ -124,4 +124,85 @@ class TruthOrLieGameController extends Controller
         return back()->with('success', 'Статус публічності оновлено!');
     }
 
+    /**
+     * Показ форми редагування гри
+     */
+    public function edit($id)
+    {
+        $game = TruthOrLieGame::findOrFail($id);
+
+        // Перевірка прав доступу
+        if (auth()->id() !== $game->user_id) {
+            abort(403, 'У вас немає прав для редагування цієї гри.');
+        }
+
+        // Підготовка даних для форми редагування
+        $gameData = [
+            'id' => $game->id,
+            'title' => $game->title,
+            'description' => $game->description,
+            'is_public' => $game->is_public,
+            'statements' => json_decode($game->game_data)
+        ];
+
+        return view('truth-or-lie.edit', compact('gameData'));
+    }
+
+    /**
+     * Оновлення гри
+     */
+    public function update(Request $request, $id)
+    {
+        $game = TruthOrLieGame::findOrFail($id);
+
+        // Перевірка прав доступу
+        if (auth()->id() !== $game->user_id) {
+            abort(403, 'У вас немає прав для редагування цієї гри.');
+        }
+
+        // Валідація даних
+        $validated = $request->validate([
+            'title' => 'required|string|max:255',
+            'description' => 'nullable|string',
+            'is_public' => 'boolean',
+            'statements' => 'required|array|min:1',
+            'statements.*.statement' => 'required|string',
+            'statements.*.is_true' => 'required|boolean',
+        ]);
+
+        // Оновлення гри
+        $game->update([
+            'title' => $validated['title'],
+            'description' => $validated['description'] ?? null,
+            'is_public' => $validated['is_public'] ?? false,
+            'game_data' => json_encode($validated['statements'])
+        ]);
+
+        return redirect()->route('truth-or-lie.show', $game->id)
+            ->with('success', 'Гру успішно оновлено!');
+    }
+
+    /**
+     * Видалення гри
+     */
+    public function destroy($id)
+    {
+        $game = TruthOrLieGame::findOrFail($id);
+
+        // Перевірка прав доступу
+        if (auth()->id() !== $game->user_id && !auth()->user()->role === 'admin') {
+            abort(403, 'У вас немає прав для видалення цієї гри.');
+        }
+
+        // Видалення пов'язаних записів (коментарі, лайки тощо)
+        $game->comments()->delete();
+        $game->likes()->delete();
+
+        // Видалення гри
+        $game->delete();
+
+        return redirect()->route('truth-or-lie.gamehub')
+            ->with('success', 'Гру успішно видалено!');
+    }
+
 }
