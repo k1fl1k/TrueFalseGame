@@ -37,6 +37,16 @@ Route::delete('truth-or-lie/{game}/comments/{comment}', [CommentController::clas
 Route::patch('/truth-or-lie/{id}/toggle-public', [TruthOrLieGameController::class, 'togglePublic'])
     ->name('truth-or-lie.toggle-public')
     ->middleware('auth');
+// Редагування та видалення гри
+Route::get('/truth-or-lie/{id}/edit', [TruthOrLieGameController::class, 'edit'])
+    ->name('truth-or-lie.edit')
+    ->middleware('auth');
+Route::put('/truth-or-lie/{id}', [TruthOrLieGameController::class, 'update'])
+    ->name('truth-or-lie.update')
+    ->middleware('auth');
+Route::delete('/truth-or-lie/{id}', [TruthOrLieGameController::class, 'destroy'])
+    ->name('truth-or-lie.destroy')
+    ->middleware('auth');
 Route::get('/gamehub', [TruthOrLieGameController::class, 'index'])->name('truth-or-lie.gamehub');
 
 require __DIR__.'/auth.php';
