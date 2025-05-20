@@ -1,5 +1,6 @@
 <?php
 
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 use k1fl1k\truefalsegame\Models\User;
 use Illuminate\Auth\Events\Registered;
@@ -25,7 +26,7 @@ new #[Layout('layouts.guest')] class extends Component {
 
         $validated['password'] = Hash::make($validated['password']);
         $validated['id'] = Str::ulid();
-        $validated['avatar'] = 'storage/images/user.svg';
+        $validated['avatar'] = asset('storage/' . "images/user.svg");
 
         event(new Registered($user = User::create($validated)));
 

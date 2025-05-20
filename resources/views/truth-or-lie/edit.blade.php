@@ -1,15 +1,16 @@
 <x-app-layout>
     <link rel="stylesheet" href="{{ asset('css/truth-or-lie-create.css') }}">
-
+    
     <div class="game-container">
-        <h2 style="color: #f4e2b7">Створи гру "Правда чи брехня"</h2>
+        <h2 style="color: #f4e2b7">Редагувати гру "Правда чи брехня"</h2>
 
-        <form method="POST" action="{{ route('truth-or-lie.store') }}" id="game-form">
+        <form method="POST" action="{{ route('truth-or-lie.update', $gameData['id']) }}" id="game-form">
             @csrf
+            @method('PUT')
 
             <div class="form-group">
                 <label for="title">Назва гри:</label>
-                <x-text-input type="text" name="title" id="title" value="{{ old('title') }}" required />
+                <x-text-input type="text" name="title" id="title" value="{{ $gameData['title'] }}" required />
                 @error('title')
                     <div class="error-message">{{ $message }}</div>
                 @enderror
@@ -17,10 +18,18 @@
 
             <div class="form-group">
                 <label for="description">Опис гри:</label>
-                <x-text-input type="text" name="description" id="description" value="{{ old('description') }}" required />
+                <x-text-input type="text" name="description" id="description" value="{{ $gameData['description'] }}" required />
                 @error('description')
                     <div class="error-message">{{ $message }}</div>
                 @enderror
+            </div>
+
+            <div class="form-group">
+                <label for="is_public">Публічність:</label>
+                <div class="flex items-center mt-2">
+                    <input type="checkbox" name="is_public" id="is_public" value="1" class="mr-2" {{ $gameData['is_public'] ? 'checked' : '' }}>
+                    <label for="is_public" class="cursor-pointer">Зробити гру публічною</label>
+                </div>
             </div>
 
             <div class="statements-header">
@@ -36,7 +45,7 @@
 
             <div class="footer-buttons">
                 <button type="button" class="btn" onclick="goBack()">Назад</button>
-                <button type="submit" class="btn btn-save" id="save-button" disabled>Зберегти</button>
+                <button type="submit" class="btn btn-save" id="save-button">Зберегти</button>
                 <button type="button" class="btn btn-delete" onclick="clearForm()">Очистити</button>
             </div>
         </form>
@@ -47,13 +56,13 @@
         <div class="modal-content">
             <span class="close-modal" onclick="closeStatementModal()">&times;</span>
             <h3 id="modal-title">Додати твердження</h3>
-
+            
             <div class="form-group">
                 <label for="statement-text">Твердження:</label>
                 <textarea id="statement-text" rows="3" class="statement-textarea"></textarea>
                 <div id="statement-text-error" class="error-message hidden">Це поле обов'язкове</div>
             </div>
-
+            
             <div class="form-group truth-options">
                 <label>Це твердження:</label>
                 <div class="radio-group">
@@ -67,8 +76,12 @@
                     </label>
                 </div>
             </div>
-
+            
             <div class="modal-buttons">
+                <div class="left-buttons">
+                    <button type="button" class="btn btn-delete" id="delete-statement-btn" onclick="deleteCurrentStatement()" style="display: none;">Видалити</button>
+                    <div class="delete-hint" id="delete-hint">Підказка: натисніть Delete для видалення</div>
+                </div>
                 <div class="right-buttons">
                     <button type="button" class="btn btn-cancel" onclick="closeStatementModal()">Скасувати</button>
                     <button type="button" class="btn btn-save" onclick="saveStatement()">Зберегти</button>
@@ -81,9 +94,22 @@
         let statementIndex = 0;
         let editingIndex = null;
         let statements = [];
+        
+        // Завантаження існуючих тверджень з даних гри
+        const gameStatements = @json($gameData['statements']);
 
         // Initialize the form
         document.addEventListener('DOMContentLoaded', function() {
+            // Завантаження існуючих тверджень
+            if (gameStatements && gameStatements.length > 0) {
+                gameStatements.forEach(statement => {
+                    statements.push({
+                        text: statement.statement,
+                        isTrue: statement.is_true === true || statement.is_true === 1
+                    });
+                });
+            }
+            
             updateStatementCount();
             checkFormValidity();
             renderStatements(); // Додано для відображення пустого стану при завантаженні
@@ -126,12 +152,16 @@
                 document.getElementById('modal-title').textContent = 'Редагувати твердження';
                 document.getElementById('statement-text').value = statements[index].text;
                 document.querySelector(`input[name="is-true"][value="${statements[index].isTrue ? 1 : 0}"]`).checked = true;
+                document.getElementById('delete-hint').style.display = 'block'; // Показати підказку про видалення
+                document.getElementById('delete-statement-btn').style.display = 'block'; // Показати кнопку видалення
             } else {
                 // Adding new statement
                 editingIndex = null;
                 document.getElementById('modal-title').textContent = 'Додати твердження';
                 document.getElementById('statement-text').value = '';
                 document.querySelector('input[name="is-true"][value="1"]').checked = true;
+                document.getElementById('delete-hint').style.display = 'none'; // Приховати підказку про видалення
+                document.getElementById('delete-statement-btn').style.display = 'none'; // Приховати кнопку видалення
             }
 
             // Show the modal

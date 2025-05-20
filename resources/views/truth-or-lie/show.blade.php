@@ -10,14 +10,31 @@
                             <p class="text-sm text-gray-500">Автор гри</p>
                         </div>
                         @if(Auth::id() === $game->user->id)
-                            <form method="POST" action="{{ route('truth-or-lie.toggle-public', $game->id) }}" class="ml-4">
-                                @csrf
-                                @method('PATCH')
-                                <button type="submit"
-                                        class="px-3 py-1 rounded bg-{{ $game->is_public ? 'green' : 'gray' }}-600 text-white text-sm hover:bg-opacity-80">
-                                    {{ $game->is_public ? 'Зробити приватною' : 'Зробити публічною' }}
-                                </button>
-                            </form>
+                            <div class="ml-4 flex space-x-2">
+                                <form method="POST" action="{{ route('truth-or-lie.toggle-public', $game->id) }}">
+                                    @csrf
+                                    @method('PATCH')
+                                    <button type="submit"
+                                            class="px-3 py-1 rounded bg-blue-600 text-white text-sm hover:bg-opacity-80">
+                                        {{ $game->is_public ? 'Зробити приватною' : 'Зробити публічною' }}
+                                    </button>
+                                </form>
+
+                                <a href="{{ route('truth-or-lie.edit', $game->id) }}"
+                                   class="px-3 py-1 rounded bg-blue-600 text-white text-sm hover:bg-opacity-80">
+                                    Редагувати
+                                </a>
+
+                                <form method="POST" action="{{ route('truth-or-lie.destroy', $game->id) }}"
+                                      onsubmit="return confirm('Ви впевнені, що хочете видалити цю гру?');">
+                                    @csrf
+                                    @method('DELETE')
+                                    <button type="submit"
+                                            class="px-3 py-1 rounded bg-red-600 text-white text-sm hover:bg-opacity-80">
+                                        Видалити
+                                    </button>
+                                </form>
+                            </div>
                         @endif
                     </a>
                 </div>
