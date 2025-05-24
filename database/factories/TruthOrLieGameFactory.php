@@ -13,31 +13,54 @@ class TruthOrLieGameFactory extends Factory
 
     public function definition(): array
     {
-        $gameVariants = [
+        $themes = [
             [
-                ['statement' => 'The sky is green.', 'is_true' => false],
-                ['statement' => 'Fish can fly.', 'is_true' => false],
-                ['statement' => 'Water boils at 100°C.', 'is_true' => true],
+                'title' => 'Цікаві факти про космос',
+                'description' => 'Перевір свої знання про космос і планети Сонячної системи.',
+                'data' => [
+                    ['statement' => 'Юпітер є найбільшою планетою в Сонячній системі.', 'is_true' => true],
+                    ['statement' => 'Місяць більший за Землю.', 'is_true' => false],
+                    ['statement' => 'На Марсі є вода у вигляді льоду.', 'is_true' => true],
+                ],
             ],
             [
-                ['statement' => 'The moon is made of cheese.', 'is_true' => false],
-                ['statement' => 'Humans need oxygen to survive.', 'is_true' => true],
-                ['statement' => 'Cats can bark.', 'is_true' => false],
+                'title' => 'Факти про людське тіло',
+                'description' => 'Чи знаєш ти, як працює людський організм?',
+                'data' => [
+                    ['statement' => 'Серце перекачує близько 5 літрів крові за хвилину.', 'is_true' => true],
+                    ['statement' => 'У людини 300 кісток у дорослому віці.', 'is_true' => false], // 206
+                    ['statement' => 'Людський мозок важить приблизно 1,4 кг.', 'is_true' => true],
+                ],
             ],
             [
-                ['statement' => 'Earth is the third planet from the sun.', 'is_true' => true],
-                ['statement' => 'A year has 400 days.', 'is_true' => false],
-                ['statement' => 'Fire is cold.', 'is_true' => false],
+                'title' => 'Технології та винаходи',
+                'description' => 'Гра про відомі технології та винаходи.',
+                'data' => [
+                    ['statement' => 'Інтернет був створений у 2005 році.', 'is_true' => false],
+                    ['statement' => 'Перший iPhone з\'явився у 2007 році.', 'is_true' => true],
+                    ['statement' => 'Едісон винайшов інтернет.', 'is_true' => false],
+                ],
+            ],
+            [
+                'title' => 'Історичні факти',
+                'description' => 'Правда чи вигадка? Перевір історичні знання!',
+                'data' => [
+                    ['statement' => 'Друга світова війна закінчилась у 1945 році.', 'is_true' => true],
+                    ['statement' => 'Єгипетські піраміди були побудовані в XIX столітті.', 'is_true' => false],
+                    ['statement' => 'Наполеон був імператором Франції.', 'is_true' => true],
+                ],
             ],
         ];
 
+        $theme = $this->faker->randomElement($themes);
+
         return [
             'user_id' => User::inRandomOrder()->first()?->id ?? User::factory(),
-            'title' => $this->faker->sentence(3),
-            'description' => $this->faker->optional()->paragraph(),
-            'is_public' => $this->faker->boolean(),
-            'image' => $this->faker->optional()->imageUrl(),
-            'game_data' => json_encode($this->faker->randomElement($gameVariants)),
+            'title' => $theme['title'],
+            'description' => $theme['description'],
+            'is_public' => $this->faker->boolean(80), // 80% публічні
+            'image' => $this->faker->optional(0.6)->imageUrl(640, 480, 'education', true, 'Game'), // 60% ігор зображення
+            'game_data' => json_encode($theme['data']),
         ];
     }
 }

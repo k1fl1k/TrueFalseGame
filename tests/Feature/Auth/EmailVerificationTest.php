@@ -40,7 +40,7 @@ class EmailVerificationTest extends TestCase
 
         Event::assertDispatched(Verified::class);
         $this->assertTrue($user->fresh()->hasVerifiedEmail());
-        $response->assertRedirect(route('dashboard', absolute: false).'?verified=1');
+        $response->assertRedirect(route('truth-or-lie.gamehub', absolute: false).'?verified=1');
     }
 
     public function test_email_is_not_verified_with_invalid_hash(): void
@@ -56,5 +56,23 @@ class EmailVerificationTest extends TestCase
         $this->actingAs($user)->get($verificationUrl);
 
         $this->assertFalse($user->fresh()->hasVerifiedEmail());
+    }
+
+    public function test_unverified_users_cannot_access_protected_routes(): void
+    {
+        $user = User::factory()->unverified()->create();
+
+        $response = $this->actingAs($user)->get('/truth-or-lie/create');
+
+        $response->assertRedirect('/verify-email');
+    }
+
+    public function test_verified_users_can_access_protected_routes(): void
+    {
+        $user = User::factory()->create();
+
+        $response = $this->actingAs($user)->get('/truth-or-lie/create');
+
+        $response->assertStatus(200);
     }
 }

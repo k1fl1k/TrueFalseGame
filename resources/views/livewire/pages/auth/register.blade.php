@@ -28,11 +28,13 @@ new #[Layout('layouts.guest')] class extends Component {
         $validated['id'] = Str::ulid();
         $validated['avatar'] = asset('storage/' . "images/user.svg");
 
-        event(new Registered($user = User::create($validated)));
+        $user = User::create($validated);
+
+        event(new Registered($user));
 
         Auth::login($user);
 
-        $this->redirect(route('truth-or-lie.gamehub', absolute: false), navigate: true);
+        $this->redirect(route('verification.notice', absolute: false), navigate: true);
     }
 };
 ?>
