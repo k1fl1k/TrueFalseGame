@@ -13,10 +13,6 @@ return new class extends Migration
     public function up(): void
     {
         Schema::table('users', function (Blueprint $table) {
-            // Drop and recreate the ID with ULID
-            $table->dropColumn('id');
-            $table->ulid('id')->primary(); // Add ULID as new ID
-
             // Rename and modify username
             $table->renameColumn('name', 'username');
             $table->string('username')->unique()->change();

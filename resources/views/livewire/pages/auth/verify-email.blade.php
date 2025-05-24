@@ -34,10 +34,7 @@ new #[Layout('layouts.guest')] class extends Component {
     }
 }; ?>
 
-<div class="flex h-screen w-full overflow-hidden font-sans bg-[#1a1a1a] text-[#f5f5f5]">
-    <!-- Left side with background image -->
-    <div class="left" style="background-image: url('{{ asset('images/truefalse.png') }}');"></div>
-    <div class="right flex flex-col justify-center items-center w-full px-6">
+<div>
     <div class="mb-4 text-sm text-gray-600 dark:text-gray-400">
         {{ __('Thanks for signing up! Before getting started, could you verify your email address by clicking on the link we just emailed to you? If you didn\'t receive the email, we will gladly send you another.') }}
     </div>
@@ -53,9 +50,9 @@ new #[Layout('layouts.guest')] class extends Component {
             {{ __('Resend Verification Email') }}
         </x-primary-button>
 
-        <button wire:click="logout" type="submit" class="ms-3">
+        <button wire:click="logout" type="submit"
+                class="underline text-sm text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-100 rounded-md focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 dark:focus:ring-offset-gray-800">
             {{ __('Log Out') }}
         </button>
-    </div>
     </div>
 </div>
