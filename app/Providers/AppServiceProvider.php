@@ -2,6 +2,7 @@
 
 namespace k1fl1k\truefalsegame\Providers;
 
+use Illuminate\Support\Facades\URL;
 use k1fl1k\truefalsegame\App\Livewire\Profile\UpdateAvatarForm;
 use k1fl1k\truefalsegame\App\Livewire\Profile\FavoriteGamesForm;
 use k1fl1k\truefalsegame\App\Livewire\Profile\UserGamesForm;
@@ -24,6 +25,10 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
+        if (app()->environment('production')) {
+            URL::forceScheme('https');
+        }
+
         Livewire::component('profile.profile-information-form', ProfileInformationForm::class);
         Livewire::component('profile.user-games-form', UserGamesForm::class);
         Livewire::component('profile.favorite-games-form', FavoriteGamesForm::class);
