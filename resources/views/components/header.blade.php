@@ -1,4 +1,4 @@
-<header class="flex items-center justify-between px-6 py-4 bg-[#1a1a1a] text-[#f5f5f5]">
+<header class="flex items-center justify-between px-6 py-4 bg-[#121212] text-[#f5f5f5]">
     @php use Illuminate\Support\Facades\Auth;$user = Auth::user(); @endphp
     <div class="text-2xl font-bold text-yellow-500">
         <a href="{{route('truth-or-lie.gamehub')}}">TrueFalse</a></div>
