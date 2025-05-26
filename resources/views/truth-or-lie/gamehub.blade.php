@@ -6,8 +6,8 @@
                     @if($game->is_public == true)
                         <a href="{{ route('truth-or-lie.show', $game->id) }}"
                            class="bg-[#1a1a1a] text-center p-4 rounded shadow block transition-transform duration-200 hover:scale-105">
-                            <div class="aspect-video mb-2 bg-cover bg-center rounded"
-                                 style="background-image: url('{{ asset($game->image ?? 'images/default.png') }}')">
+                            <div class="aspect-video mb-2 rounded"
+                                 style="background-color: {{ sprintf('#%06X', mt_rand(0, 0xFFFFFF)) }}">
                             </div>
                             <div class="text-white text-sm font-bold mb-1">{{ $game->title }}</div>
                             <div class="text-gray-400 text-xs mb-1">
