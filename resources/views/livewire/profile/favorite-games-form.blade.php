@@ -1,6 +1,6 @@
 <div class="user-posts">
     <div class="user-posts-header">
-        <h2 class="user-posts-title">User Posts</h2>
+        <h2 class="user-posts-title">Liked Posts</h2>
     </div>
     <div class="user-posts-container">
         <div class="user-posts-scroll-wrapper">
